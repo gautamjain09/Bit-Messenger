@@ -24,6 +24,7 @@ migrate_working_dir/
 ## Extras
 /lib/firebase_options.dart
 /android/app/google-services.json
+.gitignore
 
 # Flutter/Dart/Pub related
 **/doc/api/
