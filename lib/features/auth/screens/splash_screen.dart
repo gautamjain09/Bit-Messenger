@@ -1,7 +1,7 @@
 import 'package:bit_messenger/common/widgets/custom_button.dart';
+import 'package:bit_messenger/features/auth/screens/login_screen.dart';
 import 'package:bit_messenger/theme/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:routemaster/routemaster.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -53,7 +53,10 @@ class SplashScreen extends StatelessWidget {
               child: CustomButton(
                 text: 'AGREE AND CONTINUE',
                 onPressed: () {
-                  Routemaster.of(context).push("/login-screen");
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                  );
                 },
               ),
             ),

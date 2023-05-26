@@ -37,6 +37,8 @@ dependencies:
   firebase_storage: ^11.2.0
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.3.6
+  image_picker: ^0.8.7+5
   routemaster: ^1.0.1
 
 dev_dependencies:
