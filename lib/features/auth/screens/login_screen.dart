@@ -1,7 +1,7 @@
-import 'package:bit_messenger/common/utils.dart';
-import 'package:bit_messenger/common/widgets/custom_button.dart';
+import 'package:bit_messenger/core/utils.dart';
+import 'package:bit_messenger/core/widgets/custom_button.dart';
 import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
-import 'package:bit_messenger/theme/colors.dart';
+import 'package:bit_messenger/core/colors.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,7 +39,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     String phoneNumber = phoneNumberController.text.trim();
     if (country != null && phoneNumber.isNotEmpty) {
       ref
-          .read(authControllerProvider)
+          .watch(authControllerProvider)
           .signInWithPhone(context, "+${country!.phoneCode}$phoneNumber");
     } else {
       showSnackBar(context: context, text: "Fill out all the Fields");

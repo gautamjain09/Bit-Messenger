@@ -1,10 +1,11 @@
-import 'package:bit_messenger/common/widgets/error_text.dart';
-import 'package:bit_messenger/common/widgets/loader.dart';
-import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
+import 'package:bit_messenger/features/auth/repository/auth_repository.dart';
 import 'package:bit_messenger/features/auth/screens/splash_screen.dart';
 import 'package:bit_messenger/firebase_options.dart';
-import 'package:bit_messenger/screens/mobile_screen_layout.dart';
-import 'package:bit_messenger/theme/colors.dart';
+import 'package:bit_messenger/core/colors.dart';
+import 'package:bit_messenger/home_screen.dart';
+import 'package:bit_messenger/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,11 +15,37 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+
+  User? currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser != null) {
+    AuthRepository authRepository = AuthRepository(
+      firebaseAuth: FirebaseAuth.instance,
+      firestore: FirebaseFirestore.instance,
+    );
+
+    UserModel? userModel =
+        await authRepository.getCurrentUserData(currentUser.uid);
+
+    if (userModel != null) {
+      runApp(
+        const ProviderScope(
+          child: MyAppLoggedIn(),
+        ),
+      );
+    } else {
+      runApp(
+        const ProviderScope(
+          child: MyApp(),
+        ),
+      );
+    }
+  } else {
+    runApp(
+      const ProviderScope(
+        child: MyApp(),
+      ),
+    );
+  }
 }
 
 class MyApp extends ConsumerWidget {
@@ -35,17 +62,26 @@ class MyApp extends ConsumerWidget {
           color: appBarColor,
         ),
       ),
-      home: ref.watch(userDataProvider).when(
-            data: (user) {
-              if (user == null) {
-                return const SplashScreen();
-              } else {
-                return const MobileScreenLayout();
-              }
-            },
-            error: ((error, stackTrace) => ErrorText(error: error.toString())),
-            loading: () => const Loader(),
-          ),
+      home: const SplashScreen(),
+    );
+  }
+}
+
+class MyAppLoggedIn extends ConsumerWidget {
+  const MyAppLoggedIn({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Bit Messenger',
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: backgroundColor,
+        appBarTheme: const AppBarTheme(
+          color: appBarColor,
+        ),
+      ),
+      home: const HomeScreen(),
     );
   }
 }

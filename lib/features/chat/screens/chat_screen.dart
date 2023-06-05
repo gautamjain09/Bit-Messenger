@@ -1,10 +1,15 @@
-import 'package:bit_messenger/chat_info.dart';
-import 'package:bit_messenger/theme/colors.dart';
-import 'package:bit_messenger/widgets/chats_list.dart';
+import 'package:bit_messenger/core/colors.dart';
+import 'package:bit_messenger/Previous_UI/widgets/chats_list.dart';
 import 'package:flutter/material.dart';
 
-class MobileChatScreen extends StatelessWidget {
-  const MobileChatScreen({Key? key}) : super(key: key);
+class ChatScreen extends StatelessWidget {
+  final String name;
+  final String uid;
+  const ChatScreen({
+    Key? key,
+    required this.name,
+    required this.uid,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +17,7 @@ class MobileChatScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: appBarColor,
         title: Text(
-          chat_info[0]['name'].toString(),
+          name,
           style: const TextStyle(
             color: textColor,
           ),

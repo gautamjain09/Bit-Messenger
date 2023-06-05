@@ -1,5 +1,5 @@
 import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
-import 'package:bit_messenger/theme/colors.dart';
+import 'package:bit_messenger/core/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,7 +11,7 @@ class OTPScreen extends ConsumerWidget {
   });
 
   void veriflyOTP(WidgetRef ref, BuildContext context, String userOTP) {
-    ref.read(authControllerProvider).veriflyOTP(context, id, userOTP);
+    ref.watch(authControllerProvider).veriflyOTP(context, id, userOTP);
   }
 
   @override

@@ -1,6 +1,6 @@
-import 'package:bit_messenger/chat_info.dart';
-import 'package:bit_messenger/widgets/my_message_card.dart';
-import 'package:bit_messenger/widgets/sender_message_card.dart';
+import 'package:bit_messenger/Previous_UI/chat_info.dart';
+import 'package:bit_messenger/Previous_UI/widgets/my_message_card.dart';
+import 'package:bit_messenger/Previous_UI/widgets/sender_message_card.dart';
 import 'package:flutter/material.dart';
 
 class ChatList extends StatelessWidget {

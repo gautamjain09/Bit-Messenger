@@ -1,6 +1,6 @@
-import 'package:bit_messenger/common/widgets/custom_button.dart';
+import 'package:bit_messenger/core/widgets/custom_button.dart';
 import 'package:bit_messenger/features/auth/screens/login_screen.dart';
-import 'package:bit_messenger/theme/colors.dart';
+import 'package:bit_messenger/core/colors.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -19,7 +19,7 @@ class SplashScreen extends StatelessWidget {
             const Text(
               'Welcome to Bit Messenger',
               style: TextStyle(
-                fontSize: 25,
+                fontSize: 23,
                 fontWeight: FontWeight.w500,
                 color: textColor,
               ),
@@ -44,6 +44,7 @@ class SplashScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey,
+                  fontSize: 13,
                 ),
               ),
             ),

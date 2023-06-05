@@ -11,10 +11,6 @@ final authControllerProvider = Provider((ref) {
   );
 });
 
-final userDataProvider = FutureProvider((ref) {
-  return ref.watch(authControllerProvider).getUserData();
-});
-
 class AuthController {
   final AuthRepository authRepository;
   final ProviderRef ref;
@@ -39,7 +35,7 @@ class AuthController {
     authRepository.saveUserDataToFirestore(context, name, profileImage, ref);
   }
 
-  Future<UserModel?> getUserData() async {
-    return await authRepository.getUserData();
+  void logOut() {
+    authRepository.logOut();
   }
 }

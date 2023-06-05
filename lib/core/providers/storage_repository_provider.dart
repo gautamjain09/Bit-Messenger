@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:bit_messenger/common/providers/firebase_providers.dart';
-import 'package:bit_messenger/common/utils.dart';
+import 'package:bit_messenger/core/providers/firebase_providers.dart';
+import 'package:bit_messenger/core/utils.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

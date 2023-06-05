@@ -1,3 +1,4 @@
+import 'package:bit_messenger/home_screen.dart';
 import 'package:bit_messenger/features/auth/screens/otp_screen.dart';
 import 'package:bit_messenger/features/auth/screens/user_info_screen.dart';
 import 'package:bit_messenger/features/auth/screens/splash_screen.dart';
@@ -17,8 +18,8 @@ final loggedOutRoute = RouteMap(
   },
 );
 
-// final loggedInRoute = RouteMap(
-//   routes: {
-//     '/': (_) => const MaterialPage(child: HomeScreen()),
-//   },
-// );
+final loggedInRoute = RouteMap(
+  routes: {
+    '/': (_) => const MaterialPage(child: HomeScreen()),
+  },
+);

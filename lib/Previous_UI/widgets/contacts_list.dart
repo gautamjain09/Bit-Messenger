@@ -1,7 +1,7 @@
-import 'package:bit_messenger/chat_info.dart';
-import 'package:bit_messenger/screens/mobile_chat_screen.dart';
-import 'package:bit_messenger/screens/mobile_screen_layout.dart';
-import 'package:bit_messenger/theme/colors.dart';
+import 'package:bit_messenger/Previous_UI/chat_info.dart';
+import 'package:bit_messenger/features/chat/screens/chat_screen.dart';
+import 'package:bit_messenger/home_screen.dart';
+import 'package:bit_messenger/core/colors.dart';
 import 'package:flutter/material.dart';
 
 class ContactsList extends StatelessWidget {
@@ -21,7 +21,10 @@ class ContactsList extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const MobileChatScreen(),
+                      builder: (context) => const ChatScreen(
+                        name: "Piyush Bhai",
+                        uid: "123",
+                      ),
                     ),
                   );
                 },

@@ -1,9 +1,10 @@
-import 'package:bit_messenger/theme/colors.dart';
-import 'package:bit_messenger/widgets/contacts_list.dart';
+import 'package:bit_messenger/features/conctacts/screens/contacts_screen.dart';
+import 'package:bit_messenger/core/colors.dart';
+import 'package:bit_messenger/Previous_UI/widgets/contacts_list.dart';
 import 'package:flutter/material.dart';
 
-class MobileScreenLayout extends StatelessWidget {
-  const MobileScreenLayout({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,13 @@ class MobileScreenLayout extends StatelessWidget {
         ),
         body: const ContactsList(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) {
+                return const ContactsScreen();
+              }),
+            );
+          },
           backgroundColor: tabColor,
           child: const Icon(
             Icons.comment,

@@ -1,4 +1,4 @@
-import 'package:bit_messenger/theme/colors.dart';
+import 'package:bit_messenger/core/colors.dart';
 import 'package:flutter/material.dart';
 
 class MyMessageCard extends StatelessWidget {

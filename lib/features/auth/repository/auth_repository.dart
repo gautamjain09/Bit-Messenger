@@ -1,23 +1,27 @@
 import 'dart:io';
-import 'package:bit_messenger/common/constants.dart';
-import 'package:bit_messenger/common/providers/firebase_providers.dart';
-import 'package:bit_messenger/common/providers/storage_repository_provider.dart';
-import 'package:bit_messenger/common/utils.dart';
+import 'package:bit_messenger/core/constants.dart';
+import 'package:bit_messenger/core/providers/firebase_providers.dart';
+import 'package:bit_messenger/core/providers/storage_repository_provider.dart';
+import 'package:bit_messenger/core/utils.dart';
 import 'package:bit_messenger/features/auth/screens/otp_screen.dart';
 import 'package:bit_messenger/features/auth/screens/user_info_screen.dart';
 import 'package:bit_messenger/models/user_model.dart';
-import 'package:bit_messenger/screens/mobile_screen_layout.dart';
+import 'package:bit_messenger/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// ---------------------- Providers ---------------------------------------------->
+
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
-    firebaseAuth: ref.read(firebaseAuthProvider),
-    firestore: ref.read(firestoreProvider),
+    firebaseAuth: ref.watch(firebaseAuthProvider),
+    firestore: ref.watch(firestoreProvider),
   ),
 );
+
+//------------------------ Repository & Methods ------------------------------------>
 
 class AuthRepository {
   final FirebaseAuth firebaseAuth;
@@ -27,21 +31,21 @@ class AuthRepository {
     required this.firestore,
   });
 
-  void signInWithPhone(BuildContext context, String phoneNumber) {
+  void signInWithPhone(BuildContext context, String phoneNumber) async {
     try {
-      firebaseAuth.verifyPhoneNumber(
+      await firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await firebaseAuth.signInWithCredential(credential);
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          throw Exception(e.message!);
-        },
         codeSent: (String verificationId, int? resendToken) async {
           Navigator.of(context).push(
             MaterialPageRoute(
                 builder: (context) => OTPScreen(id: verificationId)),
           );
+        },
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await firebaseAuth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          throw Exception(e.message!);
         },
         timeout: const Duration(seconds: 60),
         codeAutoRetrievalTimeout: (String verificationId) {},
@@ -92,7 +96,7 @@ class AuthRepository {
       // Stroing Profile Image To Storage
       if (profileImage != null) {
         profileUrl = await ref
-            .read(storageRepositoryProvider)
+            .watch(storageRepositoryProvider)
             .storeToFirebaseStorage(context, 'profilePic/$uid', profileImage);
       }
 
@@ -110,7 +114,7 @@ class AuthRepository {
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const MobileScreenLayout()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
         (route) => false,
       );
     } on FirebaseException catch (e) {
@@ -121,16 +125,28 @@ class AuthRepository {
     }
   }
 
-  Future<UserModel?> getUserData() async {
-    var userData = await firestore
-        .collection('users')
-        .doc(firebaseAuth.currentUser!.uid)
-        .get();
+  // For State Persistance
+  Future<UserModel?> getCurrentUserData(String uid) async {
+    DocumentSnapshot userData;
+    userData = await firestore.collection("users").doc(uid).get();
 
     UserModel? userModel;
     if (userData.data() != null) {
-      userModel = UserModel.fromMap(userData.data()!);
+      userModel = UserModel.fromMap(userData.data() as Map<String, dynamic>);
     }
     return userModel;
+  }
+
+  // For getting userModel by uid
+  Stream<UserModel> getUserData(String uid) {
+    return firestore.collection("users").doc(uid).snapshots().map(
+          (event) => UserModel.fromMap(
+            event.data() as Map<String, dynamic>,
+          ),
+        );
+  }
+
+  void logOut() async {
+    await firebaseAuth.signOut();
   }
 }

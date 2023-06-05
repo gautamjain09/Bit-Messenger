@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:bit_messenger/common/constants.dart';
-import 'package:bit_messenger/common/utils.dart';
+import 'package:bit_messenger/core/constants.dart';
+import 'package:bit_messenger/core/utils.dart';
+import 'package:bit_messenger/core/widgets/custom_button.dart';
 import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,9 +30,11 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
 
   void storeUserData(String name, File? profileImage) {
     if (name.isNotEmpty) {
-      ref
-          .read(authControllerProvider)
-          .storeuserDataToFirestore(context, name, profileImage);
+      ref.watch(authControllerProvider).storeuserDataToFirestore(
+            context,
+            name,
+            profileImage,
+          );
     }
   }
 
@@ -70,7 +73,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   ),
                 ],
               ),
-              Row(
+              Column(
                 children: [
                   Container(
                     width: size.width * 0.85,
@@ -82,17 +85,16 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      storeUserData(
+                  Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: CustomButton(
+                      text: "SAVE",
+                      onPressed: () => storeUserData(
                         nameController.text.trim(),
                         profileImage,
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.done,
+                      ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ],
