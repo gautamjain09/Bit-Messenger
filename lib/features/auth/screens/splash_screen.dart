@@ -32,7 +32,7 @@ class SplashScreen extends StatelessWidget {
               'assets/bg.png',
               height: 340,
               width: 340,
-              color: tabColor,
+              color: primaryColor,
             ),
             const SizedBox(
               height: 80,

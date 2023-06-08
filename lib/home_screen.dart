@@ -1,6 +1,6 @@
+import 'package:bit_messenger/features/chat/widgets/chat_contacts_list.dart';
 import 'package:bit_messenger/features/conctacts/screens/contacts_screen.dart';
 import 'package:bit_messenger/core/colors.dart';
-import 'package:bit_messenger/Previous_UI/widgets/contacts_list.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -40,9 +40,9 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
           bottom: const TabBar(
-            indicatorColor: tabColor,
+            indicatorColor: primaryColor,
             indicatorWeight: 4,
-            labelColor: tabColor,
+            labelColor: primaryColor,
             unselectedLabelColor: Colors.grey,
             labelStyle: TextStyle(
               fontWeight: FontWeight.bold,
@@ -63,7 +63,7 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: const ContactsList(),
+        body: const ChatContactsList(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context).push(
@@ -72,7 +72,7 @@ class HomeScreen extends StatelessWidget {
               }),
             );
           },
-          backgroundColor: tabColor,
+          backgroundColor: primaryColor,
           child: const Icon(
             Icons.comment,
             color: Colors.white,

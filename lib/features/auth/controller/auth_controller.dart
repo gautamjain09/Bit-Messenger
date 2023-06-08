@@ -11,6 +11,10 @@ final authControllerProvider = Provider((ref) {
   );
 });
 
+final getUserDataProvider = StreamProvider.family((ref, String uid) {
+  return ref.watch(authControllerProvider).getUserData(uid);
+});
+
 class AuthController {
   final AuthRepository authRepository;
   final ProviderRef ref;
@@ -33,6 +37,10 @@ class AuthController {
     File? profileImage,
   ) {
     authRepository.saveUserDataToFirestore(context, name, profileImage, ref);
+  }
+
+  Stream<UserModel> getUserData(String uid) {
+    return authRepository.getUserData(uid);
   }
 
   void logOut() {

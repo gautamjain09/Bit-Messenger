@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:bit_messenger/features/conctacts/repository/contacts_repository.dart';
 
 final getContactsProvider = FutureProvider((ref) {
-  return ref.watch(contactsRepositoryProvider).getContacts();
+  return ref.watch(contactsControllerProvider).getContacts();
 });
 
 final contactsControllerProvider = Provider((ref) {
@@ -22,6 +22,10 @@ class ContactsController {
     required this.contactsRepository,
     required this.ref,
   });
+
+  Future<List<Contact>> getContacts() async {
+    return await contactsRepository.getContacts();
+  }
 
   void selectContact(Contact selectedContact, BuildContext context) async {
     contactsRepository.selectContact(selectedContact, context);

@@ -34,26 +34,26 @@ class ContactsRepository {
     return contacts;
   }
 
-  // Selecting Contacts that are available for Chat
+  // Checking if the Selected Contact is Registered in the App
   void selectContact(Contact selectedContact, BuildContext context) async {
     try {
       var userCollections = await firestore.collection('users').get();
-      var found = false;
 
+      String selectedPhoneNumber =
+          selectedContact.phones[0].number.replaceAll(' ', '');
+
+      var found = false;
       for (var doc in userCollections.docs) {
         var userData = UserModel.fromMap(doc.data());
-        String selectedPhoneNumber =
-            selectedContact.phones[0].number.replaceAll(' ', '');
         if (selectedPhoneNumber == userData.phoneNumber) {
           found = true;
-          // ignore: use_build_context_synchronously
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) {
-              return ChatScreen(
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(
                 name: userData.name,
                 uid: userData.uid,
-              );
-            }),
+              ),
+            ),
           );
           break;
         }
@@ -62,7 +62,7 @@ class ContactsRepository {
       if (!found) {
         showSnackBar(
           context: context,
-          text: "This number does not exist in App",
+          text: "This Phone Number is not Signup with the App",
         );
       }
     } catch (e) {

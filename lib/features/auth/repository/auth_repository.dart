@@ -47,7 +47,7 @@ class AuthRepository {
         verificationFailed: (FirebaseAuthException e) {
           throw Exception(e.message!);
         },
-        timeout: const Duration(seconds: 60),
+        timeout: const Duration(seconds: 120),
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
     } on FirebaseException catch (e) {

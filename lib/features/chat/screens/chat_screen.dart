@@ -1,8 +1,13 @@
 import 'package:bit_messenger/core/colors.dart';
-import 'package:bit_messenger/Previous_UI/widgets/chats_list.dart';
+import 'package:bit_messenger/core/widgets/error_text.dart';
+import 'package:bit_messenger/core/widgets/loader.dart';
+import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
+import 'package:bit_messenger/features/chat/widgets/bottom_chat_textfield.dart';
+import 'package:bit_messenger/features/chat/widgets/chat_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends ConsumerWidget {
   final String name;
   final String uid;
   const ChatScreen({
@@ -12,16 +17,39 @@ class ChatScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: Text(
-          name,
-          style: const TextStyle(
-            color: textColor,
-          ),
-        ),
+        title: ref.watch(getUserDataProvider(uid)).when(
+              data: (recieverData) {
+                return Column(
+                  children: [
+                    Text(
+                      recieverData.name,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        color: textColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      textAlign: TextAlign.start,
+                      recieverData.isOnline ? "online" : "offline",
+                      style: const TextStyle(
+                        color: textColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                  ],
+                );
+              },
+              error: ((error, stackTrace) =>
+                  ErrorText(error: error.toString())),
+              loading: () => const Loader(),
+            ),
         centerTitle: false,
         actions: [
           IconButton(
@@ -29,7 +57,7 @@ class ChatScreen extends StatelessWidget {
             icon: const Icon(
               Icons.video_call,
               size: 24,
-              color: Colors.grey,
+              color: greyColor,
             ),
           ),
           IconButton(
@@ -37,7 +65,7 @@ class ChatScreen extends StatelessWidget {
             icon: const Icon(
               Icons.call,
               size: 20,
-              color: Colors.grey,
+              color: greyColor,
             ),
           ),
           IconButton(
@@ -45,66 +73,19 @@ class ChatScreen extends StatelessWidget {
             icon: const Icon(
               Icons.more_vert,
               size: 24,
-              color: Colors.grey,
+              color: greyColor,
             ),
           ),
         ],
       ),
       body: Column(
         children: [
-          const Expanded(
-            child: ChatList(),
+          Expanded(
+            child: ChatList(recieverId: uid),
           ),
           Container(
             padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: mobileChatBoxColor,
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Icon(
-                    Icons.emoji_emotions,
-                    color: Colors.grey,
-                    size: 24,
-                  ),
-                ),
-                hintText: 'Type a message!',
-                hintStyle: const TextStyle(
-                  color: Colors.grey,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                    width: 0,
-                    style: BorderStyle.none,
-                  ),
-                ),
-                contentPadding: const EdgeInsets.all(8),
-                // suffixIcon: Row(
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: const [
-                //     Icon(
-                //       Icons.camera_alt,
-                //       color: Colors.grey,
-                //       size: 24,
-                //     ),
-                //     SizedBox(width: 8),
-                //     Icon(
-                //       Icons.attach_file,
-                //       color: Colors.grey,
-                //       size: 24,
-                //     ),
-                //     SizedBox(width: 8),
-                //     Icon(
-                //       Icons.money,
-                //       color: Colors.grey,
-                //       size: 24,
-                //     ),
-                //   ],
-                // ),
-              ),
-            ),
+            child: BottomChatTextField(recieverId: uid),
           ),
         ],
       ),
