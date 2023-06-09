@@ -1,39 +1,60 @@
-import 'package:bit_messenger/core/widgets/custom_button.dart';
 import 'package:bit_messenger/core/colors.dart';
+import 'package:bit_messenger/core/utils.dart';
+import 'package:bit_messenger/core/widgets/custom_button.dart';
 import 'package:bit_messenger/core/widgets/custom_textfield.dart';
 import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
-import 'package:bit_messenger/features/auth/screens/signup_screen.dart';
+import 'package:bit_messenger/features/auth/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends ConsumerStatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController cPasswordController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+    cPasswordController.dispose();
   }
 
-  void loginUser({
-    required BuildContext context,
-    required String email,
-    required String password,
-  }) async {
-    await ref.read(authControllerProvider).loginInwithEmailAndPassword(
-          context: context,
-          email: email,
-          password: password,
-        );
+  void signupUser(
+      {required BuildContext context,
+      required String email,
+      required String password,
+      required String cPassword}) {
+    if (email.isEmpty || password.isEmpty) {
+      showSnackBar(
+        context: context,
+        text: "Please fill all the Values",
+      );
+    }
+    if (password != cPassword) {
+      showSnackBar(
+        context: context,
+        text: "Passwords does not Match!",
+      );
+    } else if (password.length < 6) {
+      showSnackBar(
+        context: context,
+        text: "Password of atleast 6 characters is required",
+      );
+    } else {
+      ref.read(authControllerProvider).signUpwithEmailAndPassword(
+            context: context,
+            email: email,
+            password: password,
+          );
+    }
   }
 
   @override
@@ -81,15 +102,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   isObscure: true,
                 ),
                 const SizedBox(
+                  height: 20,
+                ),
+                CustomTextField(
+                  controller: cPasswordController,
+                  hintText: "Re-Enter Password",
+                  inputType: TextInputType.visiblePassword,
+                  prefixIcon: Icons.password,
+                  isObscure: true,
+                ),
+                const SizedBox(
                   height: 30,
                 ),
                 CustomButton(
-                  text: "Login",
+                  text: "SignUp",
                   onPressed: () {
-                    loginUser(
+                    signupUser(
                       context: context,
                       email: emailController.text.trim(),
                       password: passwordController.text.trim(),
+                      cPassword: cPasswordController.text.trim(),
                     );
                   },
                 ),
@@ -98,7 +130,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 GestureDetector(
                   child: const Text(
-                    "New user SignUp here!",
+                    "Already a user Login here!",
                     style: TextStyle(
                       color: greyColor,
                       fontSize: 12,
@@ -107,7 +139,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) {
-                        return const SignUpScreen();
+                        return const LoginScreen();
                       }),
                     );
                   },

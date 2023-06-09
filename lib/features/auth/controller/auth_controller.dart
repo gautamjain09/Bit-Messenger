@@ -23,12 +23,27 @@ class AuthController {
     required this.ref,
   });
 
-  void signInWithPhone(BuildContext context, String phoneNumber) {
-    authRepository.signInWithPhone(context, phoneNumber);
+  Future<void> signUpwithEmailAndPassword(
+      {required BuildContext context,
+      required String email,
+      required String password}) async {
+    return await authRepository.signUpwithEmailAndPassword(
+      context: context,
+      email: email,
+      password: password,
+    );
   }
 
-  void veriflyOTP(BuildContext context, String verificationId, String userOTP) {
-    authRepository.veriflyOTP(context, verificationId, userOTP);
+  Future<void> loginInwithEmailAndPassword({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
+    return await authRepository.loginInwithEmailAndPassword(
+      context: context,
+      email: email,
+      password: password,
+    );
   }
 
   void storeuserDataToFirestore(
@@ -36,7 +51,12 @@ class AuthController {
     String name,
     File? profileImage,
   ) {
-    authRepository.saveUserDataToFirestore(context, name, profileImage, ref);
+    authRepository.saveUserDataToFirestore(
+      context,
+      name,
+      profileImage,
+      ref,
+    );
   }
 
   Stream<UserModel> getUserData(String uid) {

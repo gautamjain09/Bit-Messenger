@@ -3,14 +3,14 @@ class UserModel {
   final String uid;
   final String profileUrl;
   final bool isOnline;
-  final String phoneNumber;
+  final String email;
   final List<String> groupId;
   UserModel({
     required this.name,
     required this.uid,
     required this.profileUrl,
     required this.isOnline,
-    required this.phoneNumber,
+    required this.email,
     required this.groupId,
   });
 
@@ -19,7 +19,7 @@ class UserModel {
     String? uid,
     String? profileUrl,
     bool? isOnline,
-    String? phoneNumber,
+    String? email,
     List<String>? groupId,
   }) {
     return UserModel(
@@ -27,7 +27,7 @@ class UserModel {
       uid: uid ?? this.uid,
       profileUrl: profileUrl ?? this.profileUrl,
       isOnline: isOnline ?? this.isOnline,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
+      email: email ?? this.email,
       groupId: groupId ?? this.groupId,
     );
   }
@@ -38,7 +38,7 @@ class UserModel {
       'uid': uid,
       'profileUrl': profileUrl,
       'isOnline': isOnline,
-      'phoneNumber': phoneNumber,
+      'email': email,
       'groupId': groupId,
     };
   }
@@ -49,10 +49,8 @@ class UserModel {
       uid: map['uid'] as String,
       profileUrl: map['profileUrl'] as String,
       isOnline: map['isOnline'] as bool,
-      phoneNumber: map['phoneNumber'] as String,
-      groupId: List<String>.from(
-        (map['groupId']),
-      ),
+      email: map['email'] as String,
+      groupId: List<String>.from((map['groupId'])),
     );
   }
 }

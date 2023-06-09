@@ -1,13 +1,14 @@
 import 'package:bit_messenger/features/chat/widgets/chat_contacts_list.dart';
-import 'package:bit_messenger/features/conctacts/screens/contacts_screen.dart';
 import 'package:bit_messenger/core/colors.dart';
+import 'package:bit_messenger/features/home/delegates/serch_user_delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -66,15 +67,16 @@ class HomeScreen extends StatelessWidget {
         body: const ChatContactsList(),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return const ContactsScreen();
-              }),
+            //  delegates Inbuilt Method
+            showSearch(
+              context: context,
+              delegate: SearchUserDelegate(ref),
             );
           },
           backgroundColor: primaryColor,
           child: const Icon(
-            Icons.comment,
+            Icons.person_search_sharp,
+            size: 28,
             color: Colors.white,
           ),
         ),

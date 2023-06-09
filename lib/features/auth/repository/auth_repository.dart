@@ -3,10 +3,9 @@ import 'package:bit_messenger/core/constants.dart';
 import 'package:bit_messenger/core/providers/firebase_providers.dart';
 import 'package:bit_messenger/core/providers/storage_repository_provider.dart';
 import 'package:bit_messenger/core/utils.dart';
-import 'package:bit_messenger/features/auth/screens/otp_screen.dart';
 import 'package:bit_messenger/features/auth/screens/user_info_screen.dart';
 import 'package:bit_messenger/models/user_model.dart';
-import 'package:bit_messenger/home_screen.dart';
+import 'package:bit_messenger/features/home/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,54 +30,69 @@ class AuthRepository {
     required this.firestore,
   });
 
-  void signInWithPhone(BuildContext context, String phoneNumber) async {
+  Future<void> signUpwithEmailAndPassword({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
     try {
-      await firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        codeSent: (String verificationId, int? resendToken) async {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-                builder: (context) => OTPScreen(id: verificationId)),
-          );
-        },
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await firebaseAuth.signInWithCredential(credential);
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          throw Exception(e.message!);
-        },
-        timeout: const Duration(seconds: 120),
-        codeAutoRetrievalTimeout: (String verificationId) {},
+      UserCredential userCredential =
+          await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      String uid = userCredential.user!.uid;
+      UserModel userModel = UserModel(
+        name: "My Name",
+        uid: uid,
+        profileUrl: Constants.defaultProfileImage,
+        isOnline: true,
+        email: email,
+        groupId: [],
+      );
+
+      await firestore.collection('users').doc(uid).set(userModel.toMap());
+
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) {
+          return const UserInfoScreen();
+        }),
+        (route) => false,
       );
     } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
       showSnackBar(
         context: context,
-        text: e.message!,
+        text: e.toString(),
       );
     }
   }
 
-  void veriflyOTP(
-    BuildContext context,
-    String verificationId,
-    String userOTP,
-  ) async {
+  Future<void> loginInwithEmailAndPassword({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
     try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: userOTP,
+      await firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
-      await firebaseAuth.signInWithCredential(credential);
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const UserInfoScreen()),
+        MaterialPageRoute(builder: (context) {
+          return const HomeScreen();
+        }),
         (route) => false,
       );
     } on FirebaseException catch (e) {
       showSnackBar(
         context: context,
-        text: e.message!,
+        text: e.toString(),
       );
     }
   }
@@ -105,7 +119,7 @@ class AuthRepository {
         uid: uid,
         profileUrl: profileUrl,
         isOnline: true,
-        phoneNumber: firebaseAuth.currentUser!.phoneNumber!,
+        email: firebaseAuth.currentUser!.email!,
         groupId: [],
       );
 

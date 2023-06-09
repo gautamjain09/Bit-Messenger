@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:bit_messenger/core/constants.dart';
 import 'package:bit_messenger/core/utils.dart';
 import 'package:bit_messenger/core/widgets/custom_button.dart';
 import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
@@ -52,7 +51,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                   (profileImage == null)
                       ? const CircleAvatar(
                           backgroundImage:
-                              NetworkImage(Constants.defaultProfileImage),
+                              AssetImage("assets/defaultProfileImage.png"),
                           radius: 64,
                         )
                       : CircleAvatar(

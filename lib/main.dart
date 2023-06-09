@@ -1,8 +1,8 @@
 import 'package:bit_messenger/features/auth/repository/auth_repository.dart';
-import 'package:bit_messenger/features/auth/screens/splash_screen.dart';
+import 'package:bit_messenger/features/auth/screens/login_screen.dart';
 import 'package:bit_messenger/firebase_options.dart';
 import 'package:bit_messenger/core/colors.dart';
-import 'package:bit_messenger/home_screen.dart';
+import 'package:bit_messenger/features/home/screens/home_screen.dart';
 import 'package:bit_messenger/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,7 +62,7 @@ class MyApp extends ConsumerWidget {
           color: appBarColor,
         ),
       ),
-      home: const SplashScreen(),
+      home: const LoginScreen(),
     );
   }
 }
