@@ -20,3 +20,15 @@ Future<File?> pickImage(BuildContext context) async {
   }
   return image;
 }
+
+Future<File?> pickVideo(BuildContext context) async {
+  File? video;
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
+    type: FileType.video,
+  );
+
+  if (result != null) {
+    video = File(result.files.single.path!);
+  }
+  return video;
+}

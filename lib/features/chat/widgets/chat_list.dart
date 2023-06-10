@@ -51,11 +51,13 @@ class _ChatListState extends ConsumerState<ChatList> {
                   return MyMessageCard(
                     message: messageData.text,
                     date: sentTime,
+                    messageEnum: messageData.type,
                   );
                 } else {
                   return SenderMessageCard(
                     message: messageData.text,
                     date: sentTime,
+                    messageEnum: messageData.type,
                   );
                 }
               },

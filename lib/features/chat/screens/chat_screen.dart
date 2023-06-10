@@ -23,26 +23,38 @@ class ChatScreen extends ConsumerWidget {
         backgroundColor: appBarColor,
         title: ref.watch(getUserDataProvider(uid)).when(
               data: (recieverData) {
-                return Column(
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      recieverData.name,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: textColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(recieverData.profileUrl),
+                        radius: 22,
                       ),
                     ),
-                    Text(
-                      textAlign: TextAlign.start,
-                      recieverData.isOnline ? "online" : "offline",
-                      style: const TextStyle(
-                        color: textColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    )
+                    Column(
+                      children: [
+                        Text(
+                          recieverData.name,
+                          textAlign: TextAlign.start,
+                          style: const TextStyle(
+                            color: textColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                          ),
+                        ),
+                        Text(
+                          textAlign: TextAlign.start,
+                          recieverData.isOnline ? "online" : "offline",
+                          style: const TextStyle(
+                            color: textColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    ),
                   ],
                 );
               },
@@ -52,22 +64,6 @@ class ChatScreen extends ConsumerWidget {
             ),
         centerTitle: false,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.video_call,
-              size: 24,
-              color: greyColor,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.call,
-              size: 20,
-              color: greyColor,
-            ),
-          ),
           IconButton(
             onPressed: () {},
             icon: const Icon(

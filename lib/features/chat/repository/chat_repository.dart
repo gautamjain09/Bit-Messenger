@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:bit_messenger/core/message_enum.dart';
 import 'package:bit_messenger/core/providers/firebase_providers.dart';
+import 'package:bit_messenger/core/providers/storage_repository_provider.dart';
 import 'package:bit_messenger/core/utils.dart';
 import 'package:bit_messenger/models/chat_contact.dart';
 import 'package:bit_messenger/models/message_model.dart';
@@ -186,5 +188,68 @@ class ChatRepository {
       }
       return allMessages;
     });
+  }
+
+  void sendFileMessage({
+    required BuildContext context,
+    required File file,
+    required UserModel senderUser,
+    required UserModel recieverUser,
+    required ProviderRef ref,
+    required MessageEnum messageEnum,
+  }) async {
+    try {
+      DateTime sentTime = DateTime.now();
+      String messageId = const Uuid().v1();
+
+      String fileUrl;
+      String messageText;
+      if (messageEnum == (MessageEnum.image)) {
+        messageText = "📷 Photo";
+        fileUrl = await ref
+            .read(storageRepositoryProvider)
+            .storeImageToFirebaseStorage(
+              context,
+              "chat/${messageEnum.type}/${senderUser.uid}${recieverUser.uid}$messageId",
+              file,
+            );
+      } else if (messageEnum == MessageEnum.video) {
+        messageText = "📸 Video";
+        fileUrl = await ref
+            .read(storageRepositoryProvider)
+            .storeVideoToFirebaseStorage(
+              context,
+              "chat/${messageEnum.type}/${senderUser.uid}${recieverUser.uid}$messageId",
+              file,
+            );
+      } else {
+        messageText = "🎶 Audio";
+        fileUrl = await ref
+            .read(storageRepositoryProvider)
+            .storeAudioToFirebaseStorage(
+              context,
+              "chat/${messageEnum.type}/${senderUser.uid}${recieverUser.uid}$messageId",
+              file,
+            );
+      }
+
+      _saveDataToContactsSubCollection(
+        text: messageText,
+        recieverUser: recieverUser,
+        senderUser: senderUser,
+        sentTime: sentTime,
+      );
+
+      _saveMessagesToMessagesSubCollection(
+        recieverUser: recieverUser,
+        senderUser: senderUser,
+        sentTime: sentTime,
+        text: fileUrl,
+        messageId: messageId,
+        messageType: messageEnum,
+      );
+    } on FirebaseException catch (e) {
+      showSnackBar(context: context, text: e.toString());
+    }
   }
 }

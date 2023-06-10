@@ -73,6 +73,7 @@ class SearchUserDelegate extends SearchDelegate {
                     ),
                   ),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: ((context) {
                         return ChatScreen(

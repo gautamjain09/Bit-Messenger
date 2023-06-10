@@ -111,7 +111,8 @@ class AuthRepository {
       if (profileImage != null) {
         profileUrl = await ref
             .watch(storageRepositoryProvider)
-            .storeToFirebaseStorage(context, 'profilePic/$uid', profileImage);
+            .storeImageToFirebaseStorage(
+                context, 'profilePic/$uid', profileImage);
       }
 
       UserModel userModel = UserModel(
@@ -162,5 +163,12 @@ class AuthRepository {
 
   void logOut() async {
     await firebaseAuth.signOut();
+  }
+
+  Future<void> setUserState(bool isOnline) async {
+    await firestore
+        .collection("users")
+        .doc(firebaseAuth.currentUser!.uid)
+        .update({"isOnline": isOnline});
   }
 }

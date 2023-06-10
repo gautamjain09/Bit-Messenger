@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'package:bit_messenger/core/message_enum.dart';
+import 'package:bit_messenger/core/utils.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:bit_messenger/core/colors.dart';
 import 'package:bit_messenger/features/chat/controller/chat_controller.dart';
@@ -17,11 +21,11 @@ class BottomChatTextField extends ConsumerStatefulWidget {
 
 class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
   bool isShowSendButton = false;
+  bool isShowEmojiContainer = false;
   FocusNode focusNode = FocusNode();
-
   final TextEditingController _messageController = TextEditingController();
 
-  void sendTextMessage() async {
+  void sendTextMessage() {
     if (isShowSendButton && _messageController.text.trim() != "") {
       ref.read(chatControllerProvider).sendTextMessage(
             context: context,
@@ -31,6 +35,52 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
 
       setState(() {
         _messageController.text = "";
+      });
+    }
+  }
+
+  void sendFileMessage({
+    required File file,
+    required MessageEnum messageEnum,
+  }) {
+    ref.watch(chatControllerProvider).sendFileMessage(
+          context: context,
+          file: file,
+          recieverId: widget.recieverId,
+          messageEnum: messageEnum,
+        );
+  }
+
+  void selectImage() async {
+    File? image = await pickImage(context);
+    if (image != null) {
+      sendFileMessage(
+        file: image,
+        messageEnum: MessageEnum.image,
+      );
+    }
+  }
+
+  void selectVideo() async {
+    File? video = await pickVideo(context);
+    if (video != null) {
+      sendFileMessage(
+        file: video,
+        messageEnum: MessageEnum.video,
+      );
+    }
+  }
+
+  void toggleEmojiKeyBoardContainer() {
+    if (isShowEmojiContainer) {
+      focusNode.requestFocus();
+      setState(() {
+        isShowEmojiContainer = false;
+      });
+    } else {
+      focusNode.unfocus();
+      setState(() {
+        isShowEmojiContainer = false;
       });
     }
   }
@@ -72,7 +122,9 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
                         Icons.emoji_emotions,
                         color: greyColor,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        toggleEmojiKeyBoardContainer();
+                      },
                     ),
                   ),
                   suffixIcon: SizedBox(
@@ -87,7 +139,9 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
                               Icons.camera_alt,
                               color: greyColor,
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              selectImage();
+                            },
                           ),
                         ),
                         Padding(
@@ -97,7 +151,9 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
                               Icons.attach_file,
                               color: greyColor,
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              selectVideo();
+                            },
                           ),
                         ),
                       ],
@@ -133,6 +189,25 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
             ),
           ],
         ),
+        isShowEmojiContainer
+            ? SizedBox(
+                height: 310,
+                child: EmojiPicker(
+                  onEmojiSelected: ((category, emoji) {
+                    setState(() {
+                      _messageController.text =
+                          _messageController.text + emoji.emoji;
+                    });
+
+                    if (!isShowSendButton) {
+                      setState(() {
+                        isShowSendButton = true;
+                      });
+                    }
+                  }),
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }

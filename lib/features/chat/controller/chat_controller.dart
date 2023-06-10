@@ -1,4 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
+import 'package:bit_messenger/core/message_enum.dart';
 import 'package:bit_messenger/core/providers/firebase_providers.dart';
 import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
 import 'package:bit_messenger/models/chat_contact.dart';
@@ -37,12 +40,12 @@ class ChatController {
     required String recieverId,
   }) async {
     UserModel recieverUser;
-    ref.read(getUserDataProvider(recieverId)).whenData((value) {
-      recieverUser = value;
+    ref.read(getUserDataProvider(recieverId)).whenData((value1) {
+      recieverUser = value1;
       UserModel senderUser;
       String senderId = ref.watch(firebaseAuthProvider).currentUser!.uid;
-      ref.read(getUserDataProvider(senderId)).whenData((value) {
-        senderUser = value;
+      ref.read(getUserDataProvider(senderId)).whenData((value2) {
+        senderUser = value2;
         chatRepository.sendTextMessage(
           context: context,
           text: text,
@@ -59,5 +62,30 @@ class ChatController {
 
   Stream<List<MessageModel>> getChatMessages(String recieverId) {
     return chatRepository.getChatMessages(recieverId);
+  }
+
+  void sendFileMessage({
+    required BuildContext context,
+    required File file,
+    required String recieverId,
+    required MessageEnum messageEnum,
+  }) {
+    UserModel recieverUser;
+    ref.read(getUserDataProvider(recieverId)).whenData((value1) {
+      recieverUser = value1;
+      UserModel senderUser;
+      String senderId = ref.watch(firebaseAuthProvider).currentUser!.uid;
+      ref.read(getUserDataProvider(senderId)).whenData((value2) {
+        senderUser = value2;
+        chatRepository.sendFileMessage(
+          context: context,
+          file: file,
+          senderUser: senderUser,
+          recieverUser: recieverUser,
+          ref: ref,
+          messageEnum: messageEnum,
+        );
+      });
+    });
   }
 }
