@@ -72,13 +72,4 @@ class StorageRepository {
     showSnackBar(context: context, text: "File Seleceted");
     return downloadUrl;
   }
-
-  Future<String> storeAudioToFirebaseStorage(
-    BuildContext context,
-    String ref,
-    File video,
-  ) async {
-    // Audio Medthods
-    return "";
-  }
 }

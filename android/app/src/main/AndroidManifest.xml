@@ -2,7 +2,7 @@
     package="com.gautamjain09.bit_messenger">
     
    <uses-permission android:name="android.permission.INTERNET"/>
-
+   
    <application
         android:label="bit_messenger"
         android:name="${applicationName}"

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:bit_messenger/core/message_enum.dart';
 import 'package:bit_messenger/core/providers/firebase_providers.dart';
+import 'package:bit_messenger/core/providers/message_reply_provider.dart';
 import 'package:bit_messenger/core/providers/storage_repository_provider.dart';
 import 'package:bit_messenger/core/utils.dart';
 import 'package:bit_messenger/models/chat_contact.dart';
@@ -39,6 +40,7 @@ class ChatRepository {
     required String text,
     required UserModel recieverUser,
     required UserModel senderUser,
+    required MessageReply? messageReply,
   }) {
     try {
       String messageId = const Uuid().v1();
@@ -54,13 +56,13 @@ class ChatRepository {
 
       // 2 -> Full Chat Messages Storing
       _saveMessagesToMessagesSubCollection(
-        recieverUser: recieverUser,
-        senderUser: senderUser,
-        sentTime: currentTime,
-        text: text,
-        messageId: messageId,
-        messageType: MessageEnum.text,
-      );
+          recieverUser: recieverUser,
+          senderUser: senderUser,
+          sentTime: currentTime,
+          text: text,
+          messageId: messageId,
+          messageType: MessageEnum.text,
+          messageReply: messageReply);
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -68,6 +70,62 @@ class ChatRepository {
         context: context,
         text: e.toString(),
       );
+    }
+  }
+
+  void sendFileMessage({
+    required BuildContext context,
+    required File file,
+    required UserModel senderUser,
+    required UserModel recieverUser,
+    required ProviderRef ref,
+    required MessageEnum messageEnum,
+    required MessageReply? messageReply,
+  }) async {
+    try {
+      DateTime sentTime = DateTime.now();
+      String messageId = const Uuid().v1();
+
+      String fileUrl;
+      String messageText;
+      if (messageEnum == (MessageEnum.image)) {
+        messageText = "📷 Photo";
+        fileUrl = await ref
+            .read(storageRepositoryProvider)
+            .storeImageToFirebaseStorage(
+              context,
+              "chat/${messageEnum.type}/${senderUser.uid}${recieverUser.uid}$messageId",
+              file,
+            );
+      } else {
+        messageText = "📸 Video";
+        fileUrl = await ref
+            .read(storageRepositoryProvider)
+            .storeVideoToFirebaseStorage(
+              context,
+              "chat/${messageEnum.type}/${senderUser.uid}${recieverUser.uid}$messageId",
+              file,
+            );
+      }
+
+      _saveDataToContactsSubCollection(
+        text: messageText,
+        recieverUser: recieverUser,
+        senderUser: senderUser,
+        sentTime: sentTime,
+      );
+
+      _saveMessagesToMessagesSubCollection(
+        recieverUser: recieverUser,
+        senderUser: senderUser,
+        sentTime: sentTime,
+        text: fileUrl,
+        messageId: messageId,
+        messageType: messageEnum,
+        messageReply: messageReply,
+      );
+    } on FirebaseException catch (e) {
+      showSnackBar(context: context, text: e.toString());
     }
   }
 
@@ -138,6 +196,7 @@ class ChatRepository {
     required String text,
     required String messageId,
     required MessageEnum messageType,
+    required MessageReply? messageReply,
   }) async {
     MessageModel message = MessageModel(
       senderId: senderUser.uid,
@@ -147,6 +206,14 @@ class ChatRepository {
       sentTime: sentTime,
       messageId: messageId,
       isSeen: false,
+      repliedMessage: (messageReply == null) ? "" : messageReply.message,
+      repliedMessageType:
+          (messageReply == null) ? MessageEnum.text : messageReply.messageEnum,
+      repliedTo: (messageReply == null)
+          ? ""
+          : messageReply.isMe
+              ? senderUser.name
+              : recieverUser.name,
     );
 
     // 1 ->
@@ -190,66 +257,32 @@ class ChatRepository {
     });
   }
 
-  void sendFileMessage({
+  void setChatMessageSeenStatus({
     required BuildContext context,
-    required File file,
-    required UserModel senderUser,
-    required UserModel recieverUser,
-    required ProviderRef ref,
-    required MessageEnum messageEnum,
+    required String recieverId,
+    required String senderId,
+    required String messageId,
   }) async {
-    try {
-      DateTime sentTime = DateTime.now();
-      String messageId = const Uuid().v1();
+    // 1 ->
+    // users -> senderId -> chats -> recieverId -> messages -> messageId -> setSeen
+    await firestore
+        .collection("users")
+        .doc(senderId)
+        .collection("chats")
+        .doc(recieverId)
+        .collection("messages")
+        .doc(messageId)
+        .update({"isSeen": true});
 
-      String fileUrl;
-      String messageText;
-      if (messageEnum == (MessageEnum.image)) {
-        messageText = "📷 Photo";
-        fileUrl = await ref
-            .read(storageRepositoryProvider)
-            .storeImageToFirebaseStorage(
-              context,
-              "chat/${messageEnum.type}/${senderUser.uid}${recieverUser.uid}$messageId",
-              file,
-            );
-      } else if (messageEnum == MessageEnum.video) {
-        messageText = "📸 Video";
-        fileUrl = await ref
-            .read(storageRepositoryProvider)
-            .storeVideoToFirebaseStorage(
-              context,
-              "chat/${messageEnum.type}/${senderUser.uid}${recieverUser.uid}$messageId",
-              file,
-            );
-      } else {
-        messageText = "🎶 Audio";
-        fileUrl = await ref
-            .read(storageRepositoryProvider)
-            .storeAudioToFirebaseStorage(
-              context,
-              "chat/${messageEnum.type}/${senderUser.uid}${recieverUser.uid}$messageId",
-              file,
-            );
-      }
-
-      _saveDataToContactsSubCollection(
-        text: messageText,
-        recieverUser: recieverUser,
-        senderUser: senderUser,
-        sentTime: sentTime,
-      );
-
-      _saveMessagesToMessagesSubCollection(
-        recieverUser: recieverUser,
-        senderUser: senderUser,
-        sentTime: sentTime,
-        text: fileUrl,
-        messageId: messageId,
-        messageType: messageEnum,
-      );
-    } on FirebaseException catch (e) {
-      showSnackBar(context: context, text: e.toString());
-    }
+    // 2 ->
+    // users -> recieverId -> chats -> senderId -> messages -> messageId -> setSeen
+    await firestore
+        .collection("users")
+        .doc(recieverId)
+        .collection("chats")
+        .doc(senderId)
+        .collection("messages")
+        .doc(messageId)
+        .update({"isSeen": true});
   }
 }

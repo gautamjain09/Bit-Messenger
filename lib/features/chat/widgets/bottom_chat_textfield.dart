@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:bit_messenger/core/message_enum.dart';
+import 'package:bit_messenger/core/providers/message_reply_provider.dart';
 import 'package:bit_messenger/core/utils.dart';
+import 'package:bit_messenger/features/chat/widgets/message_reply_preview.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:bit_messenger/core/colors.dart';
@@ -20,13 +22,18 @@ class BottomChatTextField extends ConsumerStatefulWidget {
 }
 
 class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
-  bool isShowSendButton = false;
   bool isShowEmojiContainer = false;
   FocusNode focusNode = FocusNode();
   final TextEditingController _messageController = TextEditingController();
 
-  void sendTextMessage() {
-    if (isShowSendButton && _messageController.text.trim() != "") {
+  @override
+  void dispose() {
+    super.dispose();
+    _messageController.dispose();
+  }
+
+  void sendTextMessage() async {
+    if (_messageController.text.trim() != "") {
       ref.read(chatControllerProvider).sendTextMessage(
             context: context,
             text: _messageController.text.trim(),
@@ -80,38 +87,25 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
     } else {
       focusNode.unfocus();
       setState(() {
-        isShowEmojiContainer = false;
+        isShowEmojiContainer = true;
       });
     }
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _messageController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final messageReply = ref.watch(messageReplyProvider);
+    final isShowMessageReply = messageReply != null;
+
     return Column(
       children: [
+        isShowMessageReply ? const MessageReplyPreview() : const SizedBox(),
         Row(
           children: [
             Expanded(
               child: TextFormField(
                 focusNode: focusNode,
                 controller: _messageController,
-                onChanged: (val) {
-                  if (val.isEmpty) {
-                    setState(() {
-                      isShowSendButton = false;
-                    });
-                  } else {
-                    setState(() {
-                      isShowSendButton = true;
-                    });
-                  }
-                },
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: bottomBarColor,
@@ -177,8 +171,8 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
                 backgroundColor: primaryColor,
                 radius: 22,
                 child: GestureDetector(
-                  child: Icon(
-                    isShowSendButton ? Icons.send : Icons.mic,
+                  child: const Icon(
+                    Icons.send,
                     color: greyColor,
                   ),
                   onTap: () {
@@ -198,12 +192,6 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
                       _messageController.text =
                           _messageController.text + emoji.emoji;
                     });
-
-                    if (!isShowSendButton) {
-                      setState(() {
-                        isShowSendButton = true;
-                      });
-                    }
                   }),
                 ),
               )

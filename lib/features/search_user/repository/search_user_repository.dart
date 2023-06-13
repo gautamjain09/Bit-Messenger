@@ -37,4 +37,14 @@ class SearchUserRepository {
       return users;
     });
   }
+
+  Stream<List<UserModel?>> getAllUsers() {
+    return firestore.collection("users").snapshots().map((event) {
+      List<UserModel?> users = [];
+      for (var document in event.docs) {
+        users.add(UserModel.fromMap(document.data()));
+      }
+      return users;
+    });
+  }
 }

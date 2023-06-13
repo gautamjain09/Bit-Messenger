@@ -1,8 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
-
 import 'package:bit_messenger/core/message_enum.dart';
 import 'package:bit_messenger/core/providers/firebase_providers.dart';
+import 'package:bit_messenger/core/providers/message_reply_provider.dart';
 import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
 import 'package:bit_messenger/models/chat_contact.dart';
 import 'package:bit_messenger/models/message_model.dart';
@@ -39,6 +38,8 @@ class ChatController {
     required String text,
     required String recieverId,
   }) async {
+    MessageReply? messageReply = ref.read(messageReplyProvider);
+
     UserModel recieverUser;
     ref.read(getUserDataProvider(recieverId)).whenData((value1) {
       recieverUser = value1;
@@ -51,9 +52,12 @@ class ChatController {
           text: text,
           recieverUser: recieverUser,
           senderUser: senderUser,
+          messageReply: messageReply,
         );
       });
     });
+
+    ref.read(messageReplyProvider.notifier).update((state) => null);
   }
 
   Stream<List<ChatContact>> getChatContacts() {
@@ -70,6 +74,8 @@ class ChatController {
     required String recieverId,
     required MessageEnum messageEnum,
   }) {
+    MessageReply? messageReply = ref.read(messageReplyProvider);
+
     UserModel recieverUser;
     ref.read(getUserDataProvider(recieverId)).whenData((value1) {
       recieverUser = value1;
@@ -84,8 +90,25 @@ class ChatController {
           recieverUser: recieverUser,
           ref: ref,
           messageEnum: messageEnum,
+          messageReply: messageReply,
         );
       });
     });
+
+    ref.read(messageReplyProvider.notifier).update((state) => null);
+  }
+
+  void setChatMessageSeenStatus({
+    required BuildContext context,
+    required String messageId,
+    required String recieverId,
+  }) {
+    String senderId = ref.watch(firebaseAuthProvider).currentUser!.uid;
+    chatRepository.setChatMessageSeenStatus(
+      context: context,
+      recieverId: recieverId,
+      senderId: senderId,
+      messageId: messageId,
+    );
   }
 }

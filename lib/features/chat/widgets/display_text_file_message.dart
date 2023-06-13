@@ -26,6 +26,8 @@ class DisplayTextFileCard extends StatelessWidget {
         : (messageEnum == MessageEnum.image)
             ? CachedNetworkImage(
                 imageUrl: message,
+                height: 200,
+                width: 200,
                 progressIndicatorBuilder: (context, url, downloadProgress) {
                   return CircularProgressIndicator(
                     value: downloadProgress.progress,

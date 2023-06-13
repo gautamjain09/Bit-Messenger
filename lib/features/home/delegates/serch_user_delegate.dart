@@ -42,7 +42,49 @@ class SearchUserDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return const SizedBox();
+    return ref.watch(getAllUsersProvider).when(
+          data: (data) {
+            return ListView.builder(
+              itemCount: data.length,
+              itemBuilder: ((context, index) {
+                final userData = data[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(userData!.profileUrl),
+                  ),
+                  title: Text(
+                    userData.name,
+                    style: const TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 17,
+                    ),
+                  ),
+                  subtitle: Text(
+                    userData.email,
+                    style: const TextStyle(
+                      color: textColor,
+                      fontSize: 13,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: ((context) {
+                        return ChatScreen(
+                          name: userData.name,
+                          uid: userData.uid,
+                        );
+                      })),
+                    );
+                  },
+                );
+              }),
+            );
+          },
+          error: (error, stackTrace) => ErrorText(error: error.toString()),
+          loading: () => const Loader(),
+        );
   }
 
   @override

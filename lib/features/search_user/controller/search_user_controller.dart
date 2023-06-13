@@ -15,6 +15,10 @@ final getUsersByEmailProvider = StreamProvider.family((ref, String query) {
       .searchUserByEmail(query: query);
 });
 
+final getAllUsersProvider = StreamProvider((ref) {
+  return ref.watch(searchUserControllerProvider).getAllUsers();
+});
+
 class SearchUserController {
   final SearchUserRepository searchUserRepository;
   final ProviderRef ref;
@@ -25,5 +29,9 @@ class SearchUserController {
 
   Stream<List<UserModel?>> searchUserByEmail({required String query}) {
     return searchUserRepository.searchUserByEmail(query: query);
+  }
+
+  Stream<List<UserModel?>> getAllUsers() {
+    return searchUserRepository.getAllUsers();
   }
 }

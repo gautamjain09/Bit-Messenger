@@ -1,0 +1,53 @@
+[33mcommit 59f27c8f732f377f458f6966c56f29e437855082[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Sun Jun 11 05:14:48 2023 +0530
+
+    Send Photos/Videos
+
+[33mcommit 2c65854e23f56a2a0b906b1f22d1fb9733638f73[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Fri Jun 9 22:58:18 2023 +0530
+
+    Phone Auth to Email-Password Auth
+
+[33mcommit 81cb36aa793158158dd23938a6b286a7fa272155[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Fri Jun 9 04:48:54 2023 +0530
+
+    Chat Feature
+
+[33mcommit 227475810cacb14a649314f485312c3d1491de87[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Fri Jun 9 03:57:00 2023 +0530
+
+    Remove Unwanted Files
+
+[33mcommit b298de8f23976d650ab3c8ad292905f2f5e25c15[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Mon Jun 5 21:43:57 2023 +0530
+
+    State Persistence
+
+[33mcommit 10733824a03e9e8426cbb6832445528953899bb3[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Fri May 26 19:18:42 2023 +0530
+
+    Authentication
+
+[33mcommit d179a743d9d0f8a407dc26c1e957e8681b985392[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Sun May 14 19:31:49 2023 +0530
+
+    Firebase Configs 2
+
+[33mcommit cab21ef2a41b810d6e05d173306717d82b6edc6d[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Sun May 14 18:33:27 2023 +0530
+
+    Firebase Setups
+
+[33mcommit 02af01ff05e8fa0f0b1c8992f7d4193094046fa7[m
+Author: gautamjain09 <gautamjain0918@gmail.com>
+Date:   Fri May 12 18:44:17 2023 +0530
+
+    Responsive layout

@@ -13,7 +13,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
@@ -29,13 +29,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      ref.read(authControllerProvider).setUserState(true);
-    } else {
-      // case AppLifecycleState.paused:
-      // case AppLifecycleState.inactive:
-      // case AppLifecycleState.detached:
-      ref.read(authControllerProvider).setUserState(false);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        ref.watch(authControllerProvider).setUserState(true);
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.paused:
+        ref.watch(authControllerProvider).setUserState(false);
+        break;
     }
   }
 
@@ -46,51 +48,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: appBarColor,
-          centerTitle: false,
+          backgroundColor: primaryColor,
+          centerTitle: true,
           title: const Text(
             'Bit Messenger',
             style: TextStyle(
               fontSize: 20,
               color: Colors.grey,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w500,
             ),
           ),
           actions: [
             IconButton(
               icon: const Icon(
-                Icons.search,
-                color: Colors.grey,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(
                 Icons.more_vert,
                 color: Colors.grey,
               ),
-              onPressed: () {},
+              onPressed: () {
+                // Profile & LogOut
+              },
             ),
           ],
-          bottom: const TabBar(
-            indicatorColor: primaryColor,
-            indicatorWeight: 4,
-            labelColor: primaryColor,
-            unselectedLabelColor: Colors.grey,
-            labelStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-            tabs: [
-              Tab(
-                text: 'CHATS',
-                height: 40,
-              ),
-              Tab(
-                text: 'STATUS',
-                height: 40,
-              ),
-            ],
-          ),
         ),
         body: const ChatContactsList(),
         floatingActionButton: FloatingActionButton(
