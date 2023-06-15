@@ -272,7 +272,7 @@ class ChatRepository {
         .doc(recieverId)
         .collection("messages")
         .doc(messageId)
-        .update({"isSeen": true});
+        .set({"isSeen": true});
 
     // 2 ->
     // users -> recieverId -> chats -> senderId -> messages -> messageId -> setSeen
@@ -283,6 +283,6 @@ class ChatRepository {
         .doc(senderId)
         .collection("messages")
         .doc(messageId)
-        .update({"isSeen": true});
+        .set({"isSeen": true});
   }
 }

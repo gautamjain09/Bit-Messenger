@@ -10,8 +10,8 @@ const primaryColor = Colors.indigo;
 const secondaryColor = Colors.indigoAccent;
 
 // To Change
-const messageColor = Color.fromRGBO(45, 4, 95, 1);
-const senderMessageColor = Color.fromRGBO(82, 194, 216, 1);
+const messageColor = primaryColor;
+const senderMessageColor = appBarColor;
 
 const blackColor = Colors.black;
 const greyColor = Colors.grey;

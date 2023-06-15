@@ -3,6 +3,7 @@ import 'package:bit_messenger/core/constants.dart';
 import 'package:bit_messenger/core/providers/firebase_providers.dart';
 import 'package:bit_messenger/core/providers/storage_repository_provider.dart';
 import 'package:bit_messenger/core/utils.dart';
+import 'package:bit_messenger/features/auth/screens/login_screen.dart';
 import 'package:bit_messenger/features/auth/screens/user_info_screen.dart';
 import 'package:bit_messenger/models/user_model.dart';
 import 'package:bit_messenger/features/home/screens/home_screen.dart';
@@ -10,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restart_app/restart_app.dart';
 
 // ---------------------- Providers ---------------------------------------------->
 
@@ -29,6 +31,8 @@ class AuthRepository {
     required this.firebaseAuth,
     required this.firestore,
   });
+
+  Stream<User?> get authChanges => firebaseAuth.authStateChanges();
 
   Future<void> signUpwithEmailAndPassword({
     required BuildContext context,
@@ -97,7 +101,7 @@ class AuthRepository {
     }
   }
 
-  void saveUserDataToFirestore(
+  Future<void> saveUserDataToFirestore(
     BuildContext context,
     String name,
     File? profileImage,
@@ -125,7 +129,7 @@ class AuthRepository {
       );
 
       // Storing to Database
-      await firestore.collection('users').doc(uid).set(userModel.toMap());
+      await firestore.collection('users').doc(uid).update(userModel.toMap());
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushAndRemoveUntil(
@@ -161,14 +165,28 @@ class AuthRepository {
         );
   }
 
-  void logOut() async {
-    await firebaseAuth.signOut();
-  }
-
   Future<void> setUserState(bool isOnline) async {
     await firestore
         .collection("users")
         .doc(firebaseAuth.currentUser!.uid)
         .update({"isOnline": isOnline});
+  }
+
+  Future<void> logOut(BuildContext context) async {
+    try {
+      return await firebaseAuth.signOut().then((value) {
+        // Restart.restartApp();
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) {
+            return const LoginScreen();
+          }),
+        );
+      });
+    } on FirebaseException catch (e) {
+      showSnackBar(
+        context: context,
+        text: e.message!,
+      );
+    }
   }
 }

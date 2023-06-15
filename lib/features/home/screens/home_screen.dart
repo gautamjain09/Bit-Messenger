@@ -2,6 +2,7 @@ import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
 import 'package:bit_messenger/features/home/screens/chat_contacts_list.dart';
 import 'package:bit_messenger/core/colors.dart';
 import 'package:bit_messenger/features/home/delegates/serch_user_delegate.dart';
+import 'package:bit_messenger/features/user/screens/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -66,6 +67,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
               onPressed: () {
                 // Profile & LogOut
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) {
+                    return const UserProfileScreen();
+                  },
+                ));
               },
             ),
           ],

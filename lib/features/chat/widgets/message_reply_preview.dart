@@ -35,7 +35,7 @@ class MessageReplyPreview extends ConsumerWidget {
               GestureDetector(
                 child: const Icon(
                   Icons.close,
-                  size: 16,
+                  size: 20,
                 ),
                 onTap: () {
                   // Cancel Reply

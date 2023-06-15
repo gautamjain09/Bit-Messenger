@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:bit_messenger/features/auth/repository/auth_repository.dart';
 import 'package:bit_messenger/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -63,8 +64,8 @@ class AuthController {
     return authRepository.getUserData(uid);
   }
 
-  void logOut() {
-    authRepository.logOut();
+  void logOut(BuildContext context) {
+    authRepository.logOut(context);
   }
 
   void setUserState(bool isOnline) {
