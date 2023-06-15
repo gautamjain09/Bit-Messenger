@@ -174,8 +174,7 @@ class AuthRepository {
 
   Future<void> logOut(BuildContext context) async {
     try {
-      return await firebaseAuth.signOut().then((value) {
-        // Restart.restartApp();
+      return firebaseAuth.signOut().then((value) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) {
             return const LoginScreen();

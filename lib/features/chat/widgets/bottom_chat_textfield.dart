@@ -170,7 +170,7 @@ class _BottomChatTextFieldState extends ConsumerState<BottomChatTextField> {
               child: CircleAvatar(
                 backgroundColor: primaryColor,
                 radius: 22,
-                child: GestureDetector(
+                child: InkWell(
                   child: const Icon(
                     Icons.send,
                     color: greyColor,

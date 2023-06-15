@@ -35,6 +35,7 @@ class MyMessageCard extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width - 45,
+            minWidth: 120,
           ),
           child: Card(
             elevation: 1,
@@ -94,7 +95,7 @@ class MyMessageCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 4,
+                  bottom: 1,
                   right: 10,
                   child: Row(
                     children: [

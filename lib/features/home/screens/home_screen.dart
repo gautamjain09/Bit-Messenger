@@ -44,53 +44,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: primaryColor,
-          centerTitle: true,
-          title: const Text(
-            'Bit Messenger',
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: primaryColor,
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              "assets/icon.png",
+              height: 30,
             ),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.more_vert,
-                color: Colors.grey,
+            const SizedBox(width: 12),
+            const Text(
+              'Bit Messenger',
+              style: TextStyle(
+                fontSize: 20,
+                color: textColor,
+                fontWeight: FontWeight.w500,
               ),
-              onPressed: () {
-                // Profile & LogOut
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) {
-                    return const UserProfileScreen();
-                  },
-                ));
-              },
             ),
           ],
         ),
-        body: const ChatContactsList(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            //  delegates Inbuilt Method
-            showSearch(
-              context: context,
-              delegate: SearchUserDelegate(ref),
-            );
-          },
-          backgroundColor: primaryColor,
-          child: const Icon(
-            Icons.person_search_sharp,
-            size: 28,
-            color: greyColor,
+        actions: [
+          Container(),
+        ],
+      ),
+      body: Column(
+        children: const [
+          SizedBox(
+            height: 5,
           ),
+          ChatContactsList(),
+        ],
+      ),
+      endDrawer: const UserProfileScreen(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          //  delegates Inbuilt Method
+          showSearch(
+            context: context,
+            delegate: SearchUserDelegate(ref),
+          );
+        },
+        backgroundColor: primaryColor,
+        child: const Icon(
+          Icons.person_search_sharp,
+          size: 28,
+          color: greyColor,
         ),
       ),
     );
