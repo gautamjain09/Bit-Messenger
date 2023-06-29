@@ -67,9 +67,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ),
           ],
         ),
-        actions: [
-          Container(),
-        ],
+        // actions: [
+        //   Container(),
+        // ],
       ),
       body: Column(
         children: const [

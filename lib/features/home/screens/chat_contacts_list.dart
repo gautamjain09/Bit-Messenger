@@ -4,6 +4,7 @@ import 'package:bit_messenger/features/chat/controller/chat_controller.dart';
 import 'package:bit_messenger/features/chat/screens/chat_screen.dart';
 import 'package:bit_messenger/core/colors.dart';
 import 'package:bit_messenger/models/chat_contact.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -56,7 +57,7 @@ class ChatContactsList extends ConsumerWidget {
                               ),
                             ),
                             leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
+                              backgroundImage: CachedNetworkImageProvider(
                                 chatContactData.profilePic,
                               ),
                               radius: 30,

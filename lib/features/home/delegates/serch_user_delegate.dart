@@ -3,6 +3,7 @@ import 'package:bit_messenger/core/widgets/error_text.dart';
 import 'package:bit_messenger/core/widgets/loader.dart';
 import 'package:bit_messenger/features/chat/screens/chat_screen.dart';
 import 'package:bit_messenger/features/user/controller/user_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -56,7 +57,8 @@ class SearchUserDelegate extends SearchDelegate {
                     final userData = data[index];
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: NetworkImage(userData.profileUrl),
+                        backgroundImage:
+                            CachedNetworkImageProvider(userData.profileUrl),
                       ),
                       title: Text(
                         userData.name,
@@ -99,7 +101,8 @@ class SearchUserDelegate extends SearchDelegate {
                     final userData = data[index];
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: NetworkImage(userData.profileUrl),
+                        backgroundImage:
+                            CachedNetworkImageProvider(userData.profileUrl),
                       ),
                       title: Text(
                         userData.name,

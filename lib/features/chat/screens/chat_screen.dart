@@ -4,6 +4,7 @@ import 'package:bit_messenger/core/widgets/loader.dart';
 import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
 import 'package:bit_messenger/features/chat/widgets/bottom_chat_textfield.dart';
 import 'package:bit_messenger/features/chat/widgets/chat_list.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,7 +30,8 @@ class ChatScreen extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: CircleAvatar(
-                        backgroundImage: NetworkImage(recieverData.profileUrl),
+                        backgroundImage:
+                            CachedNetworkImageProvider(recieverData.profileUrl),
                         radius: 22,
                       ),
                     ),

@@ -1,6 +1,12 @@
+import 'package:bit_messenger/core/providers/firebase_providers.dart';
 import 'package:bit_messenger/core/widgets/loader.dart';
+import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
 import 'package:bit_messenger/features/auth/repository/auth_repository.dart';
 import 'package:bit_messenger/features/auth/screens/login_screen.dart';
+import 'package:bit_messenger/features/chat/controller/chat_controller.dart';
+import 'package:bit_messenger/features/chat/repository/chat_repository.dart';
+import 'package:bit_messenger/features/user/controller/user_controller.dart';
+import 'package:bit_messenger/features/user/repository/user_repository.dart';
 import 'package:bit_messenger/firebase_options.dart';
 import 'package:bit_messenger/core/colors.dart';
 import 'package:bit_messenger/features/home/screens/home_screen.dart';
@@ -9,7 +15,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:restart_app/restart_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +58,11 @@ class _MyAppState extends ConsumerState<MyApp> {
           } else if (snapshot.hasData) {
             return const HomeScreen();
           } else {
-            Restart.restartApp();
+            ref.invalidate(getUserDataProvider);
+            ref.invalidate(getChatContactsProvider);
+            ref.invalidate(getChatMessagesProvider);
+            ref.invalidate(getUsersByEmailProvider);
+            ref.invalidate(getAllUsersProvider);
             return const LoginScreen();
           }
         },

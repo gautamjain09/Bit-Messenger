@@ -1,10 +1,7 @@
 import 'dart:io';
-
 import 'package:bit_messenger/core/providers/firebase_providers.dart';
 import 'package:bit_messenger/core/providers/storage_repository_provider.dart';
 import 'package:bit_messenger/core/utils.dart';
-import 'package:bit_messenger/features/auth/controller/auth_controller.dart';
-import 'package:bit_messenger/features/home/screens/home_screen.dart';
 import 'package:bit_messenger/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +27,7 @@ class UserRepository {
     return firestore
         .collection('users')
         .where('email',
+            isNotEqualTo: FirebaseAuth.instance.currentUser!.email,
             isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
             isLessThan: query.isEmpty
                 ? 0
@@ -46,7 +44,11 @@ class UserRepository {
   }
 
   Stream<List<UserModel>> getAllUsers() {
-    return firestore.collection('users').snapshots().map((event) {
+    return firestore
+        .collection('users')
+        .where('email', isNotEqualTo: FirebaseAuth.instance.currentUser!.email)
+        .snapshots()
+        .map((event) {
       List<UserModel> users = [];
       for (var document in event.docs) {
         users.add(UserModel.fromMap(document.data()));

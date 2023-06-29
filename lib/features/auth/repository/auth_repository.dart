@@ -3,15 +3,14 @@ import 'package:bit_messenger/core/constants.dart';
 import 'package:bit_messenger/core/providers/firebase_providers.dart';
 import 'package:bit_messenger/core/providers/storage_repository_provider.dart';
 import 'package:bit_messenger/core/utils.dart';
-import 'package:bit_messenger/features/auth/screens/login_screen.dart';
 import 'package:bit_messenger/features/auth/screens/user_info_screen.dart';
+import 'package:bit_messenger/main.dart';
 import 'package:bit_messenger/models/user_model.dart';
 import 'package:bit_messenger/features/home/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:restart_app/restart_app.dart';
 
 // ---------------------- Providers ---------------------------------------------->
 
@@ -133,7 +132,9 @@ class AuthRepository {
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
         (route) => false,
       );
     } on FirebaseException catch (e) {
@@ -142,18 +143,6 @@ class AuthRepository {
         text: e.message!,
       );
     }
-  }
-
-  // For State Persistance
-  Future<UserModel?> getCurrentUserData(String uid) async {
-    DocumentSnapshot userData;
-    userData = await firestore.collection("users").doc(uid).get();
-
-    UserModel? userModel;
-    if (userData.data() != null) {
-      userModel = UserModel.fromMap(userData.data() as Map<String, dynamic>);
-    }
-    return userModel;
   }
 
   // For getting userModel by uid
@@ -172,12 +161,12 @@ class AuthRepository {
         .update({"isOnline": isOnline});
   }
 
-  Future<void> logOut(BuildContext context) async {
+  Future<void> logOut(BuildContext context, ProviderRef ref) async {
     try {
-      return firebaseAuth.signOut().then((value) {
+      return await firebaseAuth.signOut().then((value) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) {
-            return const LoginScreen();
+            return const MyApp();
           }),
         );
       });
